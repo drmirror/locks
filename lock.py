@@ -12,12 +12,11 @@ def init(session, coll, x):
 
 def lock(session, coll, x):
     while True:
-        result = coll.find_one_and_update(
-  	        { "_id" : x, "locked" : False },
-	          { "$set" : { "locked" : True } },
-            session=session,
-            return_document=ReturnDocument.AFTER)
-        if result: break
+        result = coll.update_one(
+            { "_id" : x, "locked" : False },
+            { "$set" : { "locked" : True } },
+            session=session)
+        if result.modified_count == 1: break
         time = session.operation_time
         cursor = coll.watch([ {"$match" : { "documentKey._id" : x,
                                             "updateDescription.updatedFields.locked" : False }}],
