@@ -1,7 +1,6 @@
 #!/usr/local/bin/python                                                                                   
-
-from pymongo import MongoClient, ReturnDocument
-from time import sleep, time
+from pymongo import MongoClient
+from time import time
 
 def init(session, coll, x):
     if coll.count({"_id":x}) == 0:
@@ -27,7 +26,7 @@ def unlock(session, coll, x):
     coll.update_one( {"_id" : x}, { "$set" : { "locked" : False } }, session=session)
 
 try:
-    client = MongoClient("localhost:27017")
+    client = MongoClient("localhost:27000")
     session = client.start_session()
     coll = client["test"]["locks"]
 
